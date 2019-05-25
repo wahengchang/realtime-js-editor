@@ -8,7 +8,8 @@
       <h2 class="subtitle">
         This is public page, not require login
       </h2>
-      <span><a href="/secret">Private Page</a></span>
+      <div><a href="/secret">Private Page</a></div>
+      <div><a href="/editor">Editor Page</a></div>
     </div>
   </section>
 </template>
