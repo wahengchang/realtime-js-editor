@@ -19,6 +19,7 @@ const initConsole = () => {
   }
 }
 export default {
+  layout: 'none',
   mounted: function() {
     initConsole()
     window.addEventListener('message', this.receiveMessage, false)

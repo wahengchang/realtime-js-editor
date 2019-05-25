@@ -1,32 +1,10 @@
 <template>
   <div>
-    <header>
-      <div class="headerRow">
-        <h1>Share JS</h1>
-        <span>
-          Interview purpose, online instant real-time JavaScript code editor.
-        </span>
-      </div>
-    </header>
-    <loading :active.sync="isLoading" :is-full-page="true" />
     <nuxt />
   </div>
 </template>
 
-<script>
-import Loading from 'vue-loading-overlay'
-import 'vue-loading-overlay/dist/vue-loading.css'
-export default {
-  components: { Loading },
-  computed: {
-    isLoading: function() {
-      return this.$store.state.system.isLoading
-    }
-  }
-}
-</script>
-
-<style lang="scss">
+<style>
 html {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -73,15 +51,5 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
-}
-
-header {
-  height: 80px;
-  background-color: #f7df1f;
-
-  .headerRow {
-    padding-top: 5px;
-    padding-left: 5px;
-  }
 }
 </style>

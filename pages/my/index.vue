@@ -44,8 +44,10 @@ export default {
       return this.user
     }
   },
-  mounted: function() {
-    return Promise.all([this.fetchTemplateList(), this.fetchRoomList()])
+  mounted: async function() {
+    this.$store.commit('system/setIsLoading', true)
+    await Promise.all([this.fetchTemplateList(), this.fetchRoomList()])
+    this.$store.commit('system/setIsLoading', false)
   },
   methods: {
     // -=-=-=-=-=-=-=-= click template event -=-=-=-=-=-=
