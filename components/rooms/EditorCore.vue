@@ -1,8 +1,5 @@
 <template>
   <div class="editor">
-    <h2>
-      Collaborative Editing
-    </h2>
     <editor-content class="editor__content" :editor="editor" />
   </div>
 </template>
@@ -25,6 +22,7 @@ const roomrDao = new RoomRDao()
 const { schema } = RoomRDao
 
 export default {
+  name: 'EditorCore',
   components: {
     EditorContent
   },
@@ -36,6 +34,7 @@ export default {
     }
   },
   mounted() {
+    this.$store.commit('system/setIsLoading', true)
     const { id } = this.$route.params
     roomrDao.onById(id, this.onInit)
   },
@@ -46,6 +45,7 @@ export default {
   methods: {
     onInit(data) {
       const { doc = '', version = 1 } = data
+      this.$store.commit('system/setIsLoading', false)
       if (this.editor) {
         this.editor.destroy()
       }
@@ -94,23 +94,7 @@ export default {
 </script>
 
 <style lang="scss">
-.count {
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-  color: #27b127;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  line-height: 1;
-  &:before {
-    content: '';
-    display: inline-flex;
-    background-color: #27b127;
-    width: 0.4rem;
-    height: 0.4rem;
-    border-radius: 50%;
-    margin-right: 0.3rem;
-  }
+.editor__content {
+  height: 300px;
 }
 </style>
