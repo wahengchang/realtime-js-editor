@@ -2,7 +2,11 @@
   <div>
     <header>
       <div class="headerRow">
-        <h1>Share JS</h1>
+        <h1>
+          <a href="/">
+            Share JS
+          </a>
+        </h1>
         <span>
           Interview purpose, online instant real-time JavaScript code editor.
         </span>
@@ -82,6 +86,11 @@ header {
   .headerRow {
     padding-top: 5px;
     padding-left: 5px;
+
+    a {
+      text-decoration: none;
+      color: black;
+    }
   }
 }
 </style>

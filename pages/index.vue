@@ -8,7 +8,7 @@
       <h2 class="subtitle">
         This is public page, not require login
       </h2>
-      <div><a href="/my">My Page</a></div>
+      <div><nuxt-link to="/my">My Page</nuxt-link></div>
     </div>
   </section>
 </template>

@@ -1,112 +1,46 @@
 <template>
   <div>
-    <div class="editorWrapper">
-      <prism-editor
-        v-model="code"
-        language="js"
-        :line-numbers="true"
-        class="codeEditor"
-      />
-      <div class="buttonWrapper"><button @click="saveCode">Run</button></div>
-    </div>
-
-    <div class="iframeWrapper">
-      <iframe v-if="renderComponent" id="exframe" src="/executingFrame" />
-    </div>
+    <button @click="onUpdateCodeHandler">update</button>
+    <Editor
+      v-if="code"
+      :code="code"
+      :on-update-code-handler="onUpdateCodeHandler"
+    />
   </div>
 </template>
 
 <script>
-import 'prismjs'
-import 'prismjs/themes/prism.css'
-import PrismEditor from 'vue-prism-editor'
-import 'vue-prism-editor/dist/VuePrismEditor.css'
+import '~/utils/firebase'
+import Editor from '~/components/rooms/Editor'
+import RoomRDao from '~/utils/rDao/Room'
 
-const sleep = s =>
-  new Promise(resolve =>
-    window.setTimeout(() => {
-      return resolve()
-    }, s * 1000)
-  )
+const roomrDao = new RoomRDao()
 
 export default {
-  components: {
-    PrismEditor
-  },
+  components: { Editor },
   data: function() {
     return {
-      code: `console.log("Hello")`,
-      renderComponent: true,
-      isSave: false,
-      keypressMap: {}
+      code: null
     }
   },
   mounted: function() {
-    const body = document.getElementsByTagName('body')[0]
-    body.addEventListener('keyup', this.onKeyUpHandler)
-    body.addEventListener('keydown', this.onKeyDownHandler)
+    this.$store.commit('system/setIsLoading', true)
+    const { id } = this.$route.params
+    roomrDao.onById(id, this.onRecieveRoomHandler)
   },
   methods: {
-    saveCode: async function() {
-      this.keypressMap = {}
-      this.renderComponent = false
-      await sleep(0.1)
-      this.renderComponent = true
-      await sleep(1)
-      const { code } = this
-      this.sendMessage(code)
+    onRecieveRoomHandler: function(data) {
+      this.$store.commit('system/setIsLoading', false)
+      this.code = data.code || 'console.log("Hello")'
     },
-    onKeyUpHandler: function(e) {
-      this.keypressMap[e.code] = false
-    },
-    onKeyDownHandler: function(e) {
-      this.keypressMap[e.code] = true
-
-      if (this.keypressMap.MetaLeft && this.keypressMap.Enter) {
-        return this.saveCode()
-      }
-      if (this.keypressMap.MetaLeft && this.keypressMap.KeyS) {
-        return this.saveCode()
-      }
-    },
-    sendMessage: function(msg) {
-      const targetOrigin = window.location.origin
-      document
-        .getElementById('exframe')
-        .contentWindow.postMessage(msg, targetOrigin)
+    onUpdateCodeHandler: function(newCodeString = '') {
+      console.log(' -=-=-= onUpdateCodeHandler --=-=')
+      console.log('newCodeString: ', newCodeString)
+      const { id } = this.$route.params
+      roomrDao.update(id, 'code', newCodeString || 'console.log("origin")')
     }
   }
 }
 </script>
 
-<style>
-.codeEditor {
-  height: 300px;
-}
-
-.editorWrapper {
-  position: relative;
-}
-.buttonWrapper {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
-.buttonWrapper button {
-  width: 120px;
-  height: 40px;
-  line-height: 33px;
-  background-color: #f7df1f;
-  color: black;
-  font-size: medium;
-  font-weight: 800;
-  border: gray 1px solid;
-}
-
-.iframeWrapper iframe {
-  border: none;
-  border-top: black 1px solid;
-  border-bottom: black 1px solid;
-  width: 100%;
-}
-</style>
+<style></style>

@@ -3,7 +3,9 @@
     <ul>
       <li v-for="(item, index) of dataList" :key="index">
         <div class="roomListRow">
-          <a class="roomListButton" :href="`/rooms/${item.id}`">{{ item }}</a>
+          <nuxt-link class="roomListButton" :to="`/rooms/${item.id}`">{{
+            item
+          }}</nuxt-link>
           <button @click="onClickRemove(item.id)">remove</button>
         </div>
       </li>
