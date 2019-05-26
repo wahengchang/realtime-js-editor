@@ -1,6 +1,6 @@
 import firebase from 'firebase'
-
-export default class Template {
+import Schema from './schema'
+export default class Room {
   constructor() {
     this.database = firebase.database()
     this.ref = this.database.ref('Rooms')
@@ -19,10 +19,19 @@ export default class Template {
     })
   }
 
-  update(id, field, payload) {
+  updateField(id, field, payload) {
     console.log(id, field, payload)
     return this.database.ref(`/Rooms/${id}/${field}`).set(payload, function() {
-      console.log(' -=-=-= updated -=-=-=')
+      console.log(' -=-=-= updateField -=-=-=')
+    })
+  }
+
+  updateById(id, payload) {
+    console.log(id, payload)
+    return this.database.ref(`/Rooms/${id}`).set(payload, function() {
+      console.log(' -=-=-= updateById -=-=-= payload: ', payload)
     })
   }
 }
+
+Room.schema = Schema

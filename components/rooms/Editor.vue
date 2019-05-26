@@ -1,12 +1,7 @@
 <template>
   <div>
     <div class="editorWrapper">
-      <prism-editor
-        v-model="code"
-        language="js"
-        :line-numbers="true"
-        class="codeEditor"
-      />
+      <EditorCore :on-change="onChangeEditorHandler" />
       <div class="buttonWrapper"><button @click="runCode">Run</button></div>
     </div>
 
@@ -17,10 +12,7 @@
 </template>
 
 <script>
-import 'prismjs'
-import 'prismjs/themes/prism.css'
-import PrismEditor from 'vue-prism-editor'
-import 'vue-prism-editor/dist/VuePrismEditor.css'
+import EditorCore from './EditorCore'
 
 const sleep = s =>
   new Promise(resolve =>
@@ -30,55 +22,23 @@ const sleep = s =>
   )
 
 export default {
-  components: {
-    PrismEditor
-  },
-  props: {
-    code: {
-      type: String,
-      default: 'console.log("Default")'
-    },
-    onUpdateCodeHandler: {
-      type: Function,
-      default: null
-    }
-  },
+  components: { EditorCore },
+  props: {},
   data: function() {
     return {
-      renderComponent: true,
-      isSave: false,
-      keypressMap: {}
+      renderComponent: true
     }
   },
-  mounted: function() {
-    window.setInterval(this._onUpdateCodeHandler, 5000)
-    const body = document.getElementsByTagName('body')[0]
-    body.addEventListener('keyup', this.onKeyUpHandler)
-    body.addEventListener('keydown', this.onKeyDownHandler)
-  },
+  mounted: function() {},
   methods: {
     runCode: async function() {
-      this.keypressMap = {}
       this.renderComponent = false
-      await sleep(0.1)
-      this.renderComponent = true
+      await sleep(0.01)
+      this.keypressMap = {}
       await sleep(1)
+      this.renderComponent = true
       const { code } = this
       this.sendMessage(code)
-      this.onUpdateCodeHandler(code)
-    },
-    onKeyUpHandler: function(e) {
-      this.keypressMap[e.code] = false
-    },
-    onKeyDownHandler: function(e) {
-      this.keypressMap[e.code] = true
-
-      if (this.keypressMap.MetaLeft && this.keypressMap.Enter) {
-        return this.runCode()
-      }
-      if (this.keypressMap.MetaLeft && this.keypressMap.KeyS) {
-        return this.runCode()
-      }
     },
     sendMessage: function(msg) {
       const targetOrigin = window.location.origin
@@ -86,8 +46,8 @@ export default {
         .getElementById('exframe')
         .contentWindow.postMessage(msg, targetOrigin)
     },
-    _onUpdateCodeHandler: function() {
-      return this.onUpdateCodeHandler(this.code)
+    onChangeEditorHandler: function(data) {
+      console.log('onChangeEditorHandler -=-=-= data: ', data)
     }
   }
 }
