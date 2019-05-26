@@ -45,9 +45,7 @@ export default {
     }
   },
   mounted: async function() {
-    this.$store.commit('system/setIsLoading', true)
-    await Promise.all([this.fetchTemplateList(), this.fetchRoomList()])
-    this.$store.commit('system/setIsLoading', false)
+    await this.initData()
   },
   methods: {
     // -=-=-=-=-=-=-=-= click template event -=-=-=-=-=-=
@@ -59,26 +57,27 @@ export default {
     onClickRemoveTemplate: async function(id) {
       if (!id) console.log('[ERROR] template id is null')
       await tDao.remove(id)
-      window.location.reload()
+      await this.initData()
     },
     // -=-=-=-=-=-=-=-= click room event -=-=-=-=-=-=
     onClickAddRoom: async function() {
       const name = `peter-room-${new Date().getTime()}`
       const creator = this.user.email
-
-      console.log('-=-=-=-=-=: ')
       const payload = { ...DEFAULT_ROOM, name, creator }
-      console.log('DEFAULT_ROOM: ', DEFAULT_ROOM)
-      console.log('payload: ', payload)
       const res = await roomDao.create(payload)
       return (window.location = `/rooms/${res.id}`)
     },
     onClickRemoveRoom: async function(id) {
       if (!id) console.log('[ERROR] room id is null')
       await roomDao.remove(id)
-      window.location.reload()
+      await this.initData()
     },
     // -=-=-=-=-=-=-=-= fetch event -=-=-=-=-=-=
+    initData: async function() {
+      this.$store.commit('system/setIsLoading', true)
+      await Promise.all([this.fetchTemplateList(), this.fetchRoomList()])
+      this.$store.commit('system/setIsLoading', false)
+    },
     fetchTemplateList: async function() {
       const templateList = await tDao.list()
       this.templateList = templateList

@@ -26,7 +26,8 @@ export default {
   props: {},
   data: function() {
     return {
-      renderComponent: true
+      renderComponent: true,
+      editorCode: ''
     }
   },
   mounted: function() {},
@@ -34,20 +35,21 @@ export default {
     runCode: async function() {
       this.renderComponent = false
       await sleep(0.01)
+      this.renderComponent = true
       this.keypressMap = {}
       await sleep(1)
-      this.renderComponent = true
-      const { code } = this
-      this.sendMessage(code)
+      const { editorCode } = this
+      this.sendMessage(editorCode)
     },
     sendMessage: function(msg) {
+      console.log('msg: ', msg)
       const targetOrigin = window.location.origin
       document
         .getElementById('exframe')
         .contentWindow.postMessage(msg, targetOrigin)
     },
-    onChangeEditorHandler: function(data) {
-      console.log('onChangeEditorHandler -=-=-= data: ', data)
+    onChangeEditorHandler: function(data = '') {
+      this.editorCode = data
     }
   }
 }

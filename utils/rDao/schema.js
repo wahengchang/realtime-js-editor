@@ -18,6 +18,16 @@ const schema = {
         }
       ]
     },
+    code_block: {
+      content: 'inline*',
+      group: 'block',
+      draggable: false,
+      parseDOM: [
+        {
+          tag: 'code'
+        }
+      ]
+    },
     hard_break: {
       inline: true,
       group: 'inline',
